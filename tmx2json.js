@@ -1,38 +1,55 @@
 'use strict'
+//
+// Usage:
+// $ cat testing-data/2010-5K.xml | node tmx2json.js
+//
+// With gzip
+// $ gzip -d testing-data/ECDC.tmx.gz -c | node tmx2json.js | gzip > ECDC.json.gz
+//
+// Don't forget to set the correct encoding
+// - Use utf16le for EU tmx files
+// - Use utf8 otherwise
+
+const encoding = 'utf16le';
 
 const cheerio = require('cheerio');
 const fs = require('fs');
 const through2 = require('through2');
 
-// Command line options
-const inputFile = process.argv[2];
-const outputFile = process.argv[3] || process.argv[2] + '.json';
-
-const xml2json = function (chunk, enc, callback) {
-	let through = this;
+// The conversion function
+const tmx2json = function (chunk, enc, callback) {
 	let $ = cheerio.load(chunk, {
 		xmlMode: true
 	});
-	let termUnits = $('tu');
-	termUnits.each(function (i, termUnit) {
-		let docId = $(termUnit).find('prop').text();
-		through.push("ID: " + docId);
-		let terms = $(termUnit).find('tuv');
-		terms.each(function (i, term) {
-			let lang = $(term).attr('xml:lang');
-			let text = $(term).find('seg').text();
-			through.push(lang + ": " + text);
-		})
-	})
+	const output = []; // output array
+
+	const termUnits = $('tu');
+	termUnits.each((i, termUnit) => {
+		const obj = {};
+		// Specifically for EU tmx files, reads EU document nr.
+		// All other properties are discarded
+		const prop = $(termUnit).find('prop');
+		const type = $(prop).attr('type');
+		const text = $(prop).text();
+		if (prop && type === "Txt::Doc. No.") obj.docNo = text;
+
+		// This where the translations are
+		const terms = $(termUnit).find('tuv');
+		terms.each((i, term) => {
+			const lang = $(term).attr('xml:lang');
+			const text = $(term).find('seg').text();
+			obj[lang] = text;
+		});
+		output.push(obj);
+	});
+
+	// Convert output object to json string
+	this.push(JSON.stringify(output, null, 2));
 	callback()
 }
 
-// UNIX equivalent of
-// cat inputFile | xml2json | display on screen
-fs.createReadStream(inputFile, {
-		encoding: 'utf16le'
-	})
-	.pipe(through2(xml2json))
+process.stdin.setEncoding(encoding)
+	.pipe(through2(tmx2json))
 	.pipe(process.stdout);
 
 
