@@ -11,6 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "cheerio": "^0.20.0",
-    "iconv-lite": "^0.4.13"
+    "through2": "^2.0.1"
   }
 }
