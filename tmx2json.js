@@ -12,9 +12,6 @@
 // Verify JSON with
 // $ cat input.tmx | node tmx2json.js | jsonlint
 //
-// All together
-// $ unzip -p input.tmx.zip | node tmx2json.js | jsonlint | gzip > ../output.json.gz
-//
 // Don't forget to set the correct encoding
 // - Use utf16le for EU tmx files
 // - Use utf8 otherwise
