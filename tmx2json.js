@@ -1,22 +1,9 @@
 #!/usr/bin/env node --harmony
-
 'use strict'
 //
 // Usage:
-// $ cat input.tmx | node tmx2json.js
-//
-// With gzip
-// $ gzip -d input.tmx.gz -c | node tmx2json.js | gzip > output.json.gz
-//
-// With unzip
-// $ unzip -p input.tmx.zip | node tmx2json.js | gzip > output.json.gz
-//
-// Verify JSON with
-// $ cat input.tmx | node tmx2json.js | jsonlint
-//
-// Don't forget to set the correct encoding
-// - Use utf16le for EU tmx files
-// - Use utf8 otherwise
+// $ npm install -g tmx2json
+// $ tmx2json.js --help
 //
 
 const cheerio = require('cheerio');
@@ -28,14 +15,23 @@ const program = require('commander');
 // Command line interface
 //
 program
-  .option('-e, --encoding <encoding>', 'encoding of tmx file, e.g. utf16le. Default is utf8')
-  .parse(process.argv);
+	.option('-e, --encoding <encoding>', 'encoding of tmx file, e.g. utf16le. Default is utf8')
+	.on('--help', function () {
+		console.log('  Examples:');
+		console.log('');
+		console.log('    $ cat input.tmx | tmx2json --encoding utf16le');
+		console.log('    $ cat input.tmx | tmx2json | jsonlint');
+		console.log('    $ gzip -d input.tmx.gz -c | tmx2json | gzip > output.json.gz');
+		console.log('    $ unzip -p input.tmx.zip | tmx2json | gzip > output.json.gz');
+		console.log('');
+	})
+	.parse(process.argv);
 
 const encoding = encoding || 'utf8';
 
 if (process.stdin.read() === null) {
-   console.error("No input stream. See 'tmx2json --help'");
-   process.exit(1);
+	console.error("No input stream. See 'tmx2json --help'");
+	process.exit(1);
 }
 
 //
@@ -87,5 +83,7 @@ const obj2json = function (chunk, enc, callback) {
 process.stdin.setEncoding(encoding)
 	.pipe(through2.obj(tmx2obj))
 	.pipe(through2.obj(obj2json))
-	.on('end', function() { process.stdout.write(']'); })
+	.on('end', function () {
+		process.stdout.write(']');
+	})
 	.pipe(process.stdout);
