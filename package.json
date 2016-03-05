@@ -1,16 +1,20 @@
 {
-  "name": "cheerio-test",
+  "name": "tmx2json",
   "version": "1.0.0",
-  "description": "",
-  "main": "cheerio-tbx.js",
+  "description": "Converts zipped translation memories (tmx) to zipped json",
+  "main": "tmx2json.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Koen van Gilst <koen.vangilst@gmail.com> (http://koenvangilst.nl)",
   "license": "MIT",
+  "bin": {
+    "tmx2json": "./tmx2json.js"
+  },
   "dependencies": {
     "cheerio": "^0.20.0",
+    "commander": "^2.9.0",
     "through2": "^2.0.1"
   }
 }
