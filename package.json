@@ -1,6 +1,6 @@
 {
   "name": "tmx2json",
-  "version": "1.0.0",
+  "version": "0.1",
   "description": "Converts zipped translation memories (tmx) to zipped json",
   "main": "tmx2json.js",
   "scripts": {

@@ -10,11 +10,13 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const through2 = require('through2');
 const program = require('commander');
+const packageJson = require('./package.json');
 
 //
 // Command line interface
 //
 program
+	.version(packageJson.version)
 	.option('-e, --encoding <encoding>', 'encoding of tmx file, e.g. utf16le. Default is utf8')
 	.on('--help', function () {
 		console.log('  Examples:');
