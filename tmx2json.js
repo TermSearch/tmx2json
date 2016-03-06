@@ -1,8 +1,12 @@
 #!/usr/bin/env node --harmony
 'use strict'
 //
-// Usage:
+// Install:
+//
 // $ npm install -g tmx2json
+//
+// Get help:
+//
 // $ tmx2json.js --help
 //
 
@@ -38,20 +42,19 @@ program
 	})
 	.parse(process.argv);
 
-const encoding = program.encoding || 'utf8';
-
-// if (process.stdin.read() === null) {
-// 	console.error("No input stream. See 'tmx2json --help'");
-// 	process.exit(1);
-// }
+const encoding = program.encoding || 'utf8'; // Default encoding = utf8
 
 //
 // tmx2json
 //
 
+// Booleans help write valid JSON
+// Write opening [ on begin
+// Write closing ] on end
 var end = false;
 var begin = true;
 
+// Converts tmx (xml format) to Javascript objects
 const tmx2obj = function (chunk, enc, callback) {
 	let $ = cheerio.load(chunk, {
 		xmlMode: true
@@ -79,6 +82,7 @@ const tmx2obj = function (chunk, enc, callback) {
 	callback()
 }
 
+// Converts Javascript objects to valid JSON (enclosed in an array [])
 const obj2json = function (chunk, enc, callback) {
 	if (begin) this.push('[');
 	if (!begin) this.push(',\n');
