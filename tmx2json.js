@@ -6,6 +6,10 @@
 // $ tmx2json.js --help
 //
 
+// Todo:
+// - Detect false encoding
+// - Publish npm package
+
 const cheerio = require('cheerio');
 const fs = require('fs');
 const through2 = require('through2');
@@ -15,6 +19,7 @@ const packageJson = require('./package.json');
 //
 // Command line interface
 //
+
 program
 	.version(packageJson.version)
 	.option('-e, --encoding <encoding>', 'encoding of tmx file, e.g. utf16le. Default is utf8')
@@ -26,15 +31,19 @@ program
 		console.log('    $ gzip -d input.tmx.gz -c | tmx2json | gzip > output.json.gz');
 		console.log('    $ unzip -p input.tmx.zip | tmx2json | gzip > output.json.gz');
 		console.log('');
+		console.log('  With progress bar using pv:'); // (Doesn`t work with unzip!)
+		console.log('');
+		console.log('    $ pv eu.tmx.gz | gzip -d -c | tmx2json --encoding utf16le | gzip > eu.json.gz');
+		console.log('');
 	})
 	.parse(process.argv);
 
-const encoding = encoding || 'utf8';
+const encoding = program.encoding || 'utf8';
 
-if (process.stdin.read() === null) {
-	console.error("No input stream. See 'tmx2json --help'");
-	process.exit(1);
-}
+// if (process.stdin.read() === null) {
+// 	console.error("No input stream. See 'tmx2json --help'");
+// 	process.exit(1);
+// }
 
 //
 // tmx2json
@@ -79,7 +88,7 @@ const obj2json = function (chunk, enc, callback) {
 }
 
 //
-// Glueing all streams
+// Glueing all streams together
 //
 
 process.stdin.setEncoding(encoding)
