@@ -1,6 +1,6 @@
 {
   "name": "tmx2json",
-  "version": "0.1",
+  "version": "0.1.1",
   "description": "Converts translation memories (tmx) to JSON",
   "main": "tmx2json.js",
   "scripts": {
