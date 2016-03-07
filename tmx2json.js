@@ -1,16 +1,7 @@
 #!/usr/bin/env node --harmony
 'use strict'
-//
-// Install:
-//
-// $ npm install -g tmx2json
-//
-// Get help:
-//
-// $ tmx2json.js --help
-//
 
-// Todo:
+// TODO:
 // - Detect false encoding
 // - Publish npm package
 
@@ -62,15 +53,16 @@ const tmx2obj = function (chunk, enc, callback) {
 	const termUnits = $('tu');
 	termUnits.each((i, termUnit) => {
 		const obj = {};
+
 		// Specifically for EU tmx files, reads EU document nr.
-		// url: http://eur-lex.europa.eu/legal-content/EN-DE-NL/TXT/?uri=CELEX:32004R1788&from=EN
+		// URL: http://eur-lex.europa.eu/legal-content/EN-DE-NL/TXT/?uri=CELEX:32004R1788&from=EN
 		// All other properties are discarded
 		const prop = $(termUnit).find('prop');
 		const type = $(prop).attr('type');
 		const text = $(prop).text();
 		if (prop && type === "Txt::Doc. No.") obj.docNo = text;
 
-		// This where the translations are
+		// This where the translation strings are
 		const terms = $(termUnit).find('tuv');
 		terms.each((i, term) => {
 			const lang = $(term).attr('xml:lang');
